@@ -1,0 +1,24 @@
+{
+  "name": "origin-language-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Machine-native attribution language prototype for Origin.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "bootstrap:agent": "tsx src/bootstrap-cli.ts",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "check:english": "tsx scripts/check-english.ts",
+    "compile": "tsx src/compile-cli.ts",
+    "compile:demo": "tsx src/compiler-demo.ts",
+    "demo": "tsx src/demo.ts",
+    "eval:compiler": "tsx src/compiler-eval.ts",
+    "bench": "tsx src/benchmark.ts",
+    "mvp": "tsx src/mvp.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
