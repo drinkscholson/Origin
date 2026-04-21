@@ -305,6 +305,8 @@ sequenceDiagram
 |   |-- fw-format.md
 |   |-- input-compiler.md
 |   |-- mvp-modules.md
+|   |-- release-v0.1.0.md
+|   |-- roadmap-v0.1.1.md
 |   |-- runtime.md
 |   `-- origin-v0.1.md
 |-- prompts/
@@ -687,6 +689,12 @@ to verify that constraint.
 
 - [docs/fw-format.md](./docs/fw-format.md)
   Adaptive `FW1` hybrid transport documentation.
+
+- [docs/release-v0.1.0.md](./docs/release-v0.1.0.md)
+  Formal release notes for the first public Origin release.
+
+- [docs/roadmap-v0.1.1.md](./docs/roadmap-v0.1.1.md)
+  Hardening plan for the next patch release.
 
 - [docs/runtime.md](./docs/runtime.md)
   FW1-first runtime prototype documentation.
