@@ -123,6 +123,14 @@ F1 @self ^cam:12@14:03 #incident=HX21 #room=A
 END
 ```
 
+## Internal transport
+
+If you are operating inside an Origin runtime or multi-agent workflow, prefer `FW1` transport for internal traffic.
+
+Use readable `O1` packets for inspection and debugging.
+
+Use `FW1` when packets must actually move between agents.
+
 ## Self-check
 
 Before you emit a packet, ask:

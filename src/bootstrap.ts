@@ -155,7 +155,7 @@ function assembleBootstrapBundle(
     "",
     "## Runtime Instruction",
     "",
-    "When asked for Origin output, prefer valid Origin packets or frames over prose. If the user supplies controlled English, compile it into Origin deterministically. If explanation is requested, explain outside the packet.",
+    "When asked for Origin output, prefer valid Origin packets or frames over prose. If the user supplies controlled English, compile it into Origin deterministically. Use `FW1` as the default internal transport for multi-packet workflows. If explanation is requested, explain outside the packet.",
   );
 
   const content = sections.join("\n");

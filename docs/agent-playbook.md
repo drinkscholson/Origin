@@ -114,10 +114,11 @@ Use Origin to expose that contradiction cleanly, then revise, reject, or merge.
 
 When choosing how to speak, prefer:
 
-1. framed Origin bursts
-2. packet-level Origin
-3. controlled English only when a human-authored packet is still needed
-4. free-form prose only when explanation is explicitly requested
+1. `FW1` for internal multi-packet transport
+2. framed Origin bursts
+3. packet-level Origin
+4. controlled English only when a human-authored packet is still needed
+5. free-form prose only when explanation is explicitly requested
 
 ## 10. Final checklist
 

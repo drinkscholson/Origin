@@ -6,7 +6,9 @@ The project explores a simple thesis:
 
 > If AI systems must exchange verifiable state, provenance, confidence, and workflow references, then English is not the optimal transport format.
 
-Origin replaces prose-heavy coordination with compact, structured packets and frames that are easier for machines to parse, validate, compress, and reuse.
+Origin replaces prose-heavy coordination with compact, structured packets, adaptive bundles, and runtime transport that are easier for AI systems to parse, validate, compress, and reuse.
+
+It now includes readable packets, shared-header frames, a wire bundle, a hybrid frame-wire layer, and an FW1-first runtime path, so Origin is no longer only a readable protocol surface. It has started to evolve toward an internal AI transport language.
 
 ## Table of Contents
 
@@ -28,7 +30,7 @@ Origin replaces prose-heavy coordination with compact, structured packets and fr
 
 Origin is not trying to be a human-like natural language.
 
-It is a compact language system for machine coordination with four practical layers:
+It is a compact language system for machine coordination with six practical layers:
 
 1. `Language layer`
    A packet syntax for claims, evidence, confidence, intent, references, conflicts, and context.
@@ -42,7 +44,13 @@ It is a compact language system for machine coordination with four practical lay
 4. `Training layer`
    An AI onboarding pack plus a bootstrap runner that assembles model-ready training context.
 
-The current repository is an MVP foundation, not a production network or a full autonomous multi-agent runtime.
+5. `Transport layer`
+   Machine-oriented `W1` and adaptive `FW1` bundles for internal AI workflow transport.
+
+6. `Runtime layer`
+   An FW1-first agent runtime where English stays at the edge and internal coordination defaults to Origin transport.
+
+The current repository is an MVP foundation, not a production network or a full autonomous agent platform.
 
 ## Current Status
 
@@ -59,6 +67,10 @@ The repository currently includes:
 - an AI onboarding pack for teaching Origin to other agents
 - a bootstrap runner for assembling model-ready training context
 - a compiler evaluation suite
+- a machine-native `W1` wire format with dynamic lexicon compression
+- an adaptive `FW1` hybrid format that combines frame sharing with machine-native transport rules
+- a larger workflow corpus that exercises non-empty `FW1` lexicons
+- an FW1-first runtime prototype for internal agent coordination
 
 Current verified results from the bundled scripts:
 
@@ -72,6 +84,25 @@ Current verified results from the bundled scripts:
 
 - `npm run eval:compiler`
   Compiler evaluation status: `18/18 passed`
+
+- `npm run wire:bench`
+  Bundled workflow `W1` savings over English: `53.9%`
+  Bundled workflow `W1` savings over `O1`: `16.5%`
+
+- `npm run fw:bench`
+  Bundled workflow `FW1` savings over English: `66.1%`
+  Bundled workflow `FW1` savings over `W1`: `26.4%`
+  Bundled workflow `FW1` savings over `F1`: `0.2%`
+
+- `npm run corpus:bench`
+  Large repeated corpus `FW1` savings over English: `61.1%`
+  Large repeated corpus `FW1` savings over `F1`: `11.2%`
+  Large repeated corpus `FW1` savings over `W1`: `14.8%`
+  Large repeated corpus `FW1` lexicon mode: `lexicon`
+
+- `npm run runtime:demo`
+  Internal runtime transport `FW1` savings over English: `38.0%`
+  Runtime transport mode: `FW1`
 
 This project currently has no external service dependency and no environment variable requirement.
 
@@ -102,6 +133,8 @@ Origin improves efficiency through:
 - bundled claims
 - shared-header framing
 - deterministic normalization
+- dynamic lexicon compression in `W1`
+- adaptive frame-plus-wire transport in `FW1`
 
 ### 3. Workflow continuity
 
@@ -126,6 +159,14 @@ The repository includes:
 - drills with target outputs
 - a reusable system prompt
 - a bootstrap runner that assembles those materials into a single model-ready context bundle
+
+### 6. Runtime proof path
+
+The repository now includes an FW1-first runtime prototype where:
+
+- human ingress enters through controlled English
+- internal agent coordination defaults to `FW1`
+- final packets can still be rendered back to English at the gateway edge
 
 ## Technical Architecture
 
@@ -163,6 +204,15 @@ The repository includes:
 8. `Evaluation Layer`
    Verifies compiler correctness and deterministic behavior against a growing corpus.
 
+9. `Wire Layer`
+   Encodes packets into a machine-native bundle with shared lexicon indexes.
+
+10. `Hybrid Transport Layer`
+    Encodes frame-aware bundles that automatically decide whether lexicon atoms help or hurt the final transport size.
+
+11. `Runtime Layer`
+    Moves compiled ingress packets through deterministic agents and serializes every internal hop through `FW1`.
+
 ### Architecture Diagram
 
 ```mermaid
@@ -173,6 +223,11 @@ flowchart LR
     C --> E["Ledger"]
     C --> F["Frame Builder"]
     F --> G["Origin Frame"]
+    C --> J["W1 Wire Encoder"]
+    J --> K["Lexicon-compressed Wire Bundle"]
+    F --> M["FW1 Hybrid Encoder"]
+    M --> N["Adaptive Frame-Wire Bundle"]
+    N --> R["FW1-first Runtime"]
     E --> H["Reference Integrity and Derived Conflicts"]
     C --> I["Benchmarks and Workflow Runner"]
 ```
@@ -186,7 +241,7 @@ flowchart TD
     C["Playbook"] --> E
     D["Drills"] --> E
     E --> F["Model-ready Training Context"]
-    F --> G["Agent uses Origin Packets and Frames"]
+    F --> G["Agent uses Origin Packets, Frames, and FW1"]
 ```
 
 ### End-to-End Workflow
@@ -198,13 +253,15 @@ sequenceDiagram
     participant O as Origin Packet
     participant L as Ledger/Diagnostics
     participant F as Frame Layer
+    participant R as FW1 Runtime
     participant A as Downstream Agent
 
     H->>C: Controlled English input
     C->>O: Deterministic Origin packet
     O->>L: Validate references, conflicts, structure
     L->>F: Group compatible packets
-    F->>A: Emit packet or frame
+    F->>R: Encode FW1 transport
+    R->>A: Deliver internal agent traffic
     A->>A: Act, revise, reject, or respond in Origin
 ```
 
@@ -221,11 +278,17 @@ sequenceDiagram
 | Rendering | `src/render.ts` | Renders packets back into readable English. |
 | Examples | `src/examples.ts` | Provides reusable packet examples. |
 | Workflows | `src/workflow.ts`, `src/workflows.ts` | Runs multi-step agent scenarios and calculates savings. |
+| Corpus benchmark | `src/corpus-benchmark.ts` | Benchmarks Origin transports across the bundled workflow corpus. |
 | Compiler | `src/compiler.ts` | Compiles controlled English into Origin packets. |
 | Compiler CLI | `src/compile-cli.ts` | One-shot command-line compiler entrypoint. |
 | Compiler demo | `src/compiler-demo.ts` | Demonstrates compile and roundtrip behavior. |
 | Compiler evaluation | `src/compiler-eval.ts`, `src/compiler-eval-cases.ts` | Verifies compiler behavior against a test corpus. |
 | Bootstrap runner | `src/bootstrap.ts`, `src/bootstrap-cli.ts` | Builds model-ready Origin onboarding bundles. |
+| Wire format | `src/wire.ts` | Encodes and decodes machine-native `W1` bundles with dynamic lexicon compression. |
+| Wire demos | `src/wire-demo.ts`, `src/wire-benchmark.ts` | Demonstrates and benchmarks the machine-native transport layer. |
+| Hybrid format | `src/fw.ts` | Encodes and decodes adaptive `FW1` bundles that combine frame sharing and wire transport. |
+| Hybrid demos | `src/fw-demo.ts`, `src/fw-benchmark.ts` | Demonstrates and benchmarks the adaptive frame-wire layer. |
+| Runtime | `src/runtime.ts`, `src/runtime-demo.ts` | Runs an FW1-first coordination loop between deterministic agents. |
 | MVP runner | `src/mvp.ts` | Runs the end-to-end incident response scenario. |
 | Benchmarks | `src/benchmark.ts` | Compares English size against packet Origin. |
 
@@ -239,8 +302,10 @@ sequenceDiagram
 |   |-- agent-playbook.md
 |   |-- agent-quickstart.md
 |   |-- compiler-evaluation.md
+|   |-- fw-format.md
 |   |-- input-compiler.md
 |   |-- mvp-modules.md
+|   |-- runtime.md
 |   `-- origin-v0.1.md
 |-- prompts/
 |   `-- origin-agent-system.md
@@ -256,15 +321,24 @@ sequenceDiagram
 |   |-- compiler-eval-cases.ts
 |   |-- compiler-eval.ts
 |   |-- compiler.ts
+|   |-- corpus-benchmark.ts
 |   |-- demo.ts
 |   |-- diagnostics.ts
 |   |-- examples.ts
+|   |-- fw-benchmark.ts
+|   |-- fw-demo.ts
+|   |-- fw.ts
 |   |-- frame.ts
 |   |-- ledger.ts
 |   |-- model.ts
 |   |-- mvp.ts
 |   |-- render.ts
+|   |-- runtime-demo.ts
+|   |-- runtime.ts
 |   |-- vocabulary.ts
+|   |-- wire-benchmark.ts
+|   |-- wire-demo.ts
+|   |-- wire.ts
 |   |-- workflow.ts
 |   `-- workflows.ts
 |-- .gitignore
@@ -329,6 +403,42 @@ Run compiler regression tests:
 npm run eval:compiler
 ```
 
+Run the machine-native wire demo:
+
+```bash
+npm run wire:demo
+```
+
+Benchmark the wire layer:
+
+```bash
+npm run wire:bench
+```
+
+Show the hybrid frame-wire layer:
+
+```bash
+npm run fw:demo
+```
+
+Benchmark the hybrid layer:
+
+```bash
+npm run fw:bench
+```
+
+Benchmark the larger workflow corpus:
+
+```bash
+npm run corpus:bench
+```
+
+Run the FW1-first runtime demo:
+
+```bash
+npm run runtime:demo
+```
+
 ## Usage
 
 ### Command Reference
@@ -342,6 +452,12 @@ npm run eval:compiler
 | `npm run compile:demo` | Show compiler roundtrip and inference examples. |
 | `npm run bootstrap:agent` | Build a model-ready training bundle from prompts and drills. |
 | `npm run eval:compiler` | Run the compiler evaluation suite. |
+| `npm run wire:demo` | Show the lexicon-compressed `W1` wire bundle. |
+| `npm run wire:bench` | Compare English, `O1`, `F1`, and `W1` transport sizes. |
+| `npm run fw:demo` | Show the adaptive `FW1` hybrid bundle. |
+| `npm run fw:bench` | Compare English, `O1`, `F1`, `W1`, and `FW1` transport sizes. |
+| `npm run corpus:bench` | Compare English, `O1`, `F1`, `W1`, and `FW1` across the bundled workflow corpus. |
+| `npm run runtime:demo` | Run the FW1-first runtime demo with internal agent coordination. |
 | `npm run check` | Run TypeScript type checking. |
 | `npm run check:english` | Fail if repository text files contain CJK characters. |
 
@@ -368,6 +484,25 @@ F1 @peer7 ^text:88 ^voice:44 #incident=HX21 #priority=high #room=A
 - $hx21-p6 &hx21-p5 !a corridor=blocked %61 ~vrf
 - $hx21-p7 &hx21-p5 +hx21-p6 !r medic->serviceEntry %78 ~ast
 END
+```
+
+### Example W1 Bundle
+
+```text
+W1|A,cam,room,door,open
+pkt-001|self|a|~3=~4|~1!12@14:03|91|obs|-|-|-|~2=~0
+```
+
+### Example FW1 Bundle
+
+```text
+FW1
+= @peer7 ^text!88 ^voice!44 #incident=HX21 #priority=high #room=A
+- $hx21-p4 !a user=distress %83 ~ntf
+- $hx21-p5 &hx21-p4 +hx21-p3 !c medic->roomA %86 ~ast
+- $hx21-p6 &hx21-p5 !a corridor=blocked %61 ~vrf
+- $hx21-p7 &hx21-p5 +hx21-p6 !r medic->serviceEntry %78 ~ast
+.
 ```
 
 ### Programmatic Usage
@@ -399,6 +534,18 @@ const bundle = buildAgentBootstrapBundle({
 
 console.log(bundle.estimatedTokens);
 console.log(bundle.content);
+```
+
+Run the FW1-first runtime in code:
+
+```ts
+import { runDefaultRuntimeSession } from "./src/runtime.js";
+
+const session = runDefaultRuntimeSession();
+
+console.log(session.transportMode);
+console.log(session.totalFrameWireBytes);
+console.log(session.finalPackets);
 ```
 
 ## Configuration
@@ -441,6 +588,24 @@ The bootstrap runner supports:
 - `--no-drills`
   Omit all drills.
 
+### FW1 Options
+
+The `FW1` encoder supports:
+
+- automatic lexicon tuning by default
+- an optional `minFrequency` override through `encodeFrameWireBundle(packets, { minFrequency })`
+
+If no lexicon improves the final size, the encoder will emit a `FW1` bundle with an empty lexicon.
+
+### Runtime Options
+
+The runtime entrypoint supports:
+
+- `runDefaultRuntimeSession(input?, { maxRounds })`
+- `runOriginRuntimeSession(input, agents, { maxRounds })`
+
+The built-in runtime always uses `FW1` for internal transport envelopes.
+
 ### English-only Repository Rule
 
 Repository code, comments, prompts, and docs are intended to remain English-only.
@@ -470,6 +635,10 @@ to verify that constraint.
 - [x] Agent bootstrap runner
 - [x] Compiler evaluation corpus
 - [x] English-only repository guard
+- [x] `W1` machine-native wire layer
+- [x] `FW1` adaptive hybrid transport layer
+- [x] Larger repeated workflow corpus
+- [x] FW1-first runtime prototype
 
 ### In Progress
 
@@ -477,13 +646,15 @@ to verify that constraint.
 - [ ] Wider controlled-English coverage
 - [ ] Larger evaluation corpus
 - [ ] Richer conflict graph semantics
+- [ ] Richer runtime agent behaviors beyond the deterministic playbook
 
 ### Planned
 
 - [ ] Binary transport format
 - [ ] Model-in-the-loop Origin generation evaluation
-- [ ] Multi-agent runtime integration
+- [ ] Multi-agent runtime integration with model-driven agents
 - [ ] Free-form natural-language fallback strategies
+- [ ] Model-side preference for `W1` or other non-English internal forms
 
 ## Docs Index
 
@@ -511,6 +682,15 @@ to verify that constraint.
 - [docs/compiler-evaluation.md](./docs/compiler-evaluation.md)
   Compiler evaluation suite documentation.
 
+- [docs/wire-format.md](./docs/wire-format.md)
+  Machine-native `W1` wire format documentation.
+
+- [docs/fw-format.md](./docs/fw-format.md)
+  Adaptive `FW1` hybrid transport documentation.
+
+- [docs/runtime.md](./docs/runtime.md)
+  FW1-first runtime prototype documentation.
+
 - [prompts/origin-agent-system.md](./prompts/origin-agent-system.md)
   Copy-pasteable system prompt for Origin-capable agents.
 
@@ -526,7 +706,7 @@ Because deterministic input is more valuable than broad but unreliable interpret
 
 ### Does Origin replace English?
 
-No. Origin is designed to replace English in machine coordination paths where compactness, provenance, and reference integrity matter. English remains useful for explanation, teaching, and human-facing discussion.
+Origin is designed to replace English inside machine coordination and internal AI workflow paths where compactness, provenance, and reference integrity matter. English remains useful at the human interface for explanation, teaching, and discussion.
 
 ### Why are packet ids required?
 
@@ -536,13 +716,25 @@ Because multi-agent workflows need explicit references for replies, revisions, d
 
 Because the current goal is machine efficiency, deterministic parsing, and easy integration with existing toolchains. The MVP is optimizing protocol usefulness before aesthetic or emergent linguistic forms.
 
+### Does Origin have a machine-native layer beyond readable packets?
+
+Yes. `W1` and `FW1` are machine-oriented transport layers in the repository. `W1` adds a lexicon-compressed wire bundle. `FW1` adds frame-aware hybrid transport with adaptive lexicon selection.
+
+### Does Origin already use `FW1` inside a runtime?
+
+Yes. The current runtime prototype compiles controlled English at the ingress edge and then uses `FW1` for every internal transport envelope between agents.
+
+### Why can `FW1` choose an empty lexicon?
+
+Because lexicons are not free. On some workloads, shared frame headers already compress the traffic so well that a lexicon would add more header cost than value. `FW1` automatically picks the smallest transport, including the empty-lexicon case when that wins.
+
 ### Is there a binary transport format yet?
 
 Not yet. The current repository focuses on text packets and frames first. Binary transport is on the roadmap.
 
 ### Is there a production network or API server in this repository?
 
-No. This repository is currently a language and tooling prototype. It does not yet provide a distributed runtime, hosted API, or deployment surface.
+No. This repository is currently a language, transport, and runtime prototype. It does not yet provide a distributed network, hosted API, or deployment surface.
 
 ### Is there a license?
 

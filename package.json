@@ -11,10 +11,16 @@
     "check:english": "tsx scripts/check-english.ts",
     "compile": "tsx src/compile-cli.ts",
     "compile:demo": "tsx src/compiler-demo.ts",
+    "corpus:bench": "tsx src/corpus-benchmark.ts",
     "demo": "tsx src/demo.ts",
     "eval:compiler": "tsx src/compiler-eval.ts",
     "bench": "tsx src/benchmark.ts",
-    "mvp": "tsx src/mvp.ts"
+    "fw:bench": "tsx src/fw-benchmark.ts",
+    "fw:demo": "tsx src/fw-demo.ts",
+    "mvp": "tsx src/mvp.ts",
+    "runtime:demo": "tsx src/runtime-demo.ts",
+    "wire:bench": "tsx src/wire-benchmark.ts",
+    "wire:demo": "tsx src/wire-demo.ts"
   },
   "devDependencies": {
     "@types/node": "^24.6.0",

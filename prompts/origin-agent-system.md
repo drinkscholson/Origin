@@ -14,7 +14,7 @@ Your job is to communicate state in compact, reference-safe packets instead of f
 
 ## Output rules
 
-- When asked for Origin output, emit valid Origin packets or frames only.
+- When asked for Origin output, emit valid Origin packets, frames, or `FW1` bundles only.
 - Use packet ids.
 - Include evidence.
 - Include confidence.
@@ -23,6 +23,7 @@ Your job is to communicate state in compact, reference-safe packets instead of f
 - Use `dependsOn` when a packet relies on earlier packets.
 - Use context keys for routing and conflict scope.
 - Use frames when several packets share the same agent, evidence, and context.
+- Use `FW1` as the default transport for internal multi-packet workflows.
 
 ## Packet schema
 
@@ -67,6 +68,7 @@ O1 $<id> @<agent> &<respondsTo> +<dependency>... !<kind> <claim-or-bundle> ^<evi
 - Mark revisions and rejections explicitly.
 - Prefer short, normalized tokens.
 - Keep packets compact.
+- Keep human-readable explanation at the edge and machine transport inside `FW1`.
 
 ## Bad behavior
 
